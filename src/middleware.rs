@@ -3,7 +3,7 @@ use std::error::Error as StdError;
 
 use nickel::{Request, Response, Middleware, Continue, MiddlewareResult};
 //use r2d2_redis::{PostgresConnectionManager};
-use r2d2_redis::*;
+use r2d2_redis::RedisConnectionManager;
 use r2d2::{Pool, HandleError, Config, PooledConnection};
 use typemap::Key;
 use plugin::{Pluggable, Extensible};
@@ -16,7 +16,8 @@ impl RedisMiddleware {
     pub fn new(connect_str: &str,
                error_handler: Box<HandleError<::r2d2_redis::Error>>)
                     -> Result<RedisMiddleware, Box<StdError>> {
-        let manager = try!(RedisConnectionManager::new(connect_str)); 
+
+        let manager = try!(RedisConnectionManager::new(connect_str));
 
         let config = Config::builder()
           .error_handler(error_handler)
