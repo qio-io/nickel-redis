@@ -14,12 +14,14 @@ pub struct RedisMiddleware {
 
 impl RedisMiddleware {
     pub fn new(connect_str: &str,
-               error_handler: Box<HandleError<::r2d2_redis::Error>>)
+                num_connections: u32,
+                error_handler: Box<HandleError<::r2d2_redis::Error>>)
                     -> Result<RedisMiddleware, Box<StdError>> {
 
         let manager = try!(RedisConnectionManager::new(connect_str));
 
         let config = Config::builder()
+          .pool_size(num_connections)
           .error_handler(error_handler)
           .build();
 
